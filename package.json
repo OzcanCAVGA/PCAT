@@ -4,7 +4,8 @@
   "description": "PCAT Photo App",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,12 @@
   "bugs": {
     "url": "https://github.com/OzcanCAVGA/PCAT/issues"
   },
-  "homepage": "https://github.com/OzcanCAVGA/PCAT#readme"
+  "homepage": "https://github.com/OzcanCAVGA/PCAT#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "prettier": "3.1.1"
+  }
 }
