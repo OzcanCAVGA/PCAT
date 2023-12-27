@@ -1,7 +1,17 @@
 const express = require('express');
 const app = express();
 const path = require("path")
+const ejs = require('ejs');
 app.use(express.static('public'))
+
+//TEMPLATE ENGINE
+app.set("view engine","ejs")
+
+
+
+
+
+
 
 //MIDDLEWARE
 // const myLogger = (req,res,next) =>{
@@ -16,9 +26,17 @@ app.use(express.static('public'))
 // app.use(myLogger)
 // app.use(myLogger2)
 
-app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname,'temp/index.html'))
-});
+
+//ROUTES
+app.get("/",(req,res)=>{
+    res.render('index')
+})
+app.get("/about",(req,res)=>{
+    res.render('about')
+})
+app.get('/add',(req,res)=>{
+    res.render('add')
+})
 
 
 const port = 3000;
