@@ -9,10 +9,7 @@ const app = express();
 //connect DB
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/pcat-test-db', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
+    await mongoose.connect('mongodb://127.0.0.1:27017/pcat-test-db');
 }
 
 
@@ -34,6 +31,14 @@ app.get("/", async (req, res) => {
         photos: photos
     })
 })
+
+app.get("/photos/:id",async (req, res) => {
+    const photo = await Photo.findById(req.params.id)
+    res.render('photo',{ // yonlendirmek istedigim template dosyam
+        photo // template dosyama yollanacak veritabanindaki dosyam
+    })
+})
+
 app.get("/about", (req, res) => {
     res.render('about')
 })
