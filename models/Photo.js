@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+//create schema
 const PhotoSchema = new Schema({
     title: String,
     description: String,
@@ -11,5 +12,5 @@ const PhotoSchema = new Schema({
     }
 })
 
-const Photo = mongoose.model('Photo', PhotoSchema)
-module.exports = Photo
+const Photo = mongoose.model('Photo', PhotoSchema) // schemayi modele cevirme
+module.exports = Photo // modeli disariya acma
