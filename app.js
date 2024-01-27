@@ -26,7 +26,9 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true })) // HTML form bicimindeki verileri islemek icin kullaniyoruz.
 app.use(express.json()) // JSON verilerini islemek icin kullaniyoruz.
 app.use(fileUpload())
-app.use(methodOverride('_method'));
+app.use(methodOverride('_method', {
+    methods: ['POST', 'GET']
+}));
 
 
 //ROUTES
@@ -53,23 +55,27 @@ app.get('/add', (req, res) => {
 
 app.post('/photos', async (req, res) => {
 
-    const uploadDir = 'public/uploads'
+    if (req.files && req.files.image) { // kullanici siteye fotografli post atiyorsa burasi calisacak
+        const uploadDir = 'public/uploads'
 
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir)
-    }
+        if (!fs.existsSync(uploadDir)) { // uploadDir dizini yoksa onu olusturuyor.
+            fs.mkdirSync(uploadDir)
+        }
+        let uploadedImage = req.files.image
+        let uploadPath = __dirname + '/public/uploads/' + uploadedImage.md5 + uploadedImage.name
+        console.log(uploadedImage)
 
-
-    let uploadedImage = req.files.image
-    let uploadPath = __dirname + '/public/uploads/' + uploadedImage.name
-
-    uploadedImage.mv(uploadPath, async () => {
-        await Photo.create({
-            ...req.body,
-            image: '/uploads/' + uploadedImage.name
+        uploadedImage.mv(uploadPath, async () => {
+            await Photo.create({
+                ...req.body,
+                image: '/uploads/' + uploadedImage.md5 + uploadedImage.name
+            })
         })
-        res.redirect('/')
-    })
+    }
+    else { // kullanici siteye fotografsiz post atmiyorsa burasi calisacak
+        await Photo.create({ ...req.body })
+    }
+    res.redirect('/')
 })
 
 app.get('/photos/edit/:id', async (req, res) => {
@@ -86,6 +92,18 @@ app.put('/photos/:id', async (req, res) => {
     photo.save()
 
     res.redirect(`/photos/${req.params.id}`)
+})
+
+app.delete('/photos/:id', async (req, res) => {
+    const photo = await Photo.findOne({ _id: req.params.id })
+    let deletedImage = __dirname + '/public' + photo.image
+    console.log(deletedImage)
+    if (fs.existsSync(deletedImage)) {
+        fs.unlinkSync(deletedImage)
+    }
+
+    await Photo.findByIdAndDelete(req.params.id)
+    res.redirect('/')
 })
 
 const port = 3000;
